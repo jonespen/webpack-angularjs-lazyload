@@ -1,9 +1,5 @@
-var fooController = require('./foo.controller.js');
+import fooController from './foo.controller.js';
+import './foo.scss';
 
-require('./foo.scss');
-
-var mod = angular.module('foo', []);
-
-mod.controller('FooController', ['$scope', fooController]);
-
-module.exports = mod;
+module.exports = angular.module('foo', [])
+.controller('FooController', fooController);

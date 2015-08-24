@@ -1,14 +1,14 @@
 'use strict';
 
-require('./core');
+import angular from 'angular';
+import ngRouter from 'angular-ui-router';
+import ocLazyLoad from 'oclazyload';
 
-require('angular');
-require('angular-ui-router/release/angular-ui-router');
-require('ocLazyLoad/dist/ocLazyLoad');
+import './core';
 
 var app = angular.module('webpackExample', [
-  'ui.router',
-  'oc.lazyLoad'
+  ngRouter,
+  ocLazyLoad
   ]);
 
 angular.module('webpackExample')
@@ -20,7 +20,16 @@ angular.module('webpackExample')
       $stateProvider
         .state('foo', {
           url: '/foo',
-          template: require('./foo/foo.html'),
+          templateProvider: ['$q', function($q) {
+            var deferred = $q.defer();
+
+            require.ensure([], function(require) {
+              var template = require('./foo/foo.html');
+              deferred.resolve(template);
+            }, 'foo');
+
+            return deferred.promise;
+          }],
           controller: 'FooController',
           resolve: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
             var deferred = $q.defer();
@@ -32,14 +41,23 @@ angular.module('webpackExample')
               });
               
               deferred.resolve(mod.controller);
-            });
+            }, 'foo');
 
             return deferred.promise;
           }]
         })
         .state('bar', {
           url: '/bar',
-          template: require('./bar/bar.html'),
+          templateProvider: ['$q', function($q) {
+            var deferred = $q.defer();
+
+            require.ensure([], function(require) {
+              var template = require('./bar/bar.html');
+              deferred.resolve(template);
+            }, 'bar');
+
+            return deferred.promise;
+          }],
           controller: 'BarController',
           resolve: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
             var deferred = $q.defer();
@@ -51,7 +69,7 @@ angular.module('webpackExample')
               });
               
               deferred.resolve(mod.controller);
-            });
+            }, 'bar');
 
             return deferred.promise;
           }]

@@ -1,9 +1,5 @@
-var barController = require('./bar.controller.js');
+import barController from './bar.controller.js';
+import './bar.scss';
 
-require('./bar.scss');
-
-var mod = module.exports = angular.module('bar', []);
-
-mod.controller('BarController', ['$scope', barController]);
-
-module.exports = mod;
+module.exports = angular.module('bar', [])
+.controller('BarController', barController);

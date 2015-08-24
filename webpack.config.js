@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var autoprefixer = require('autoprefixer-core');
 
 module.exports = {
   debug: true,
@@ -14,12 +15,17 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loaders: ['babel']
+      },
+      {
         test: /\.html$/,
         loader: 'html'
       },
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
+        loader: 'style-loader!css-loader!sass-loader!postcss-loader'
       },
       {
         test: /\.png$/,
@@ -31,11 +37,15 @@ module.exports = {
       }
     ]
   },
+
+
+  postcss: function () {
+      return [autoprefixer];
+  },
   
   resolve: {
     modulesDirectories: [
-      'node_modules',
-      'app/vendor'
+      'node_modules'
     ]
   }  
 };
